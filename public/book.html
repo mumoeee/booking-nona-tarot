@@ -5,75 +5,105 @@
   <title>Booking Slot - Nona Tarot</title>
 </head>
 <body>
+
   <h1>Booking Slot</h1>
 
   <h2>Sisa Slot Hari Ini: <span id="remainingSlot">Loading...</span></h2>
-  
+
   <form id="bookingForm">
-    <label>Nama: <input type="text" id="name" required></label><br><br>
-    <label>Email: <input type="email" id="email" required></label><br><br>
-    <label>Paket:
+    <label>
+      Nama:
+      <input type="text" id="name" required>
+    </label>
+    <br><br>
+
+    <label>
+      Email:
+      <input type="email" id="email" required>
+    </label>
+    <br><br>
+
+    <label>
+      Paket:
       <select id="package" required>
         <option value="">-- Pilih Paket --</option>
         <option value="Pertanyaan BPJS">Pertanyaan BPJS</option>
         <option value="Bacaan Semesta">Bacaan Semesta</option>
         <option value="All Package">All Package</option>
       </select>
-    </label><br><br>
+    </label>
+    <br><br>
+
     <button type="submit">Booking</button>
   </form>
 
+<script>
+  // =========================
+  // AMBIL SISA SLOT
+  // =========================
+  async function fetchSlot() {
+    try {
+      const res = await fetch('/api/slot');
+      const data = await res.json();
 
-  <script>
-    // Fungsi ambil sisa slot
-    async function fetchSlot() {
-      try {
-        const res = await fetch('/api/slot'); // ganti sesuai endpoint slot-mu di Vercel
-        const data = await res.json();
-        if (data.success) {
-          document.getElementById('remainingSlot').textContent = data.remaining;
-        } else {
-          document.getElementById('remainingSlot').textContent = 'Error mengambil slot';
-        }
-      } catch (err) {
-        document.getElementById('remainingSlot').textContent = 'Error mengambil slot';
+      if (data.success) {
+        document.getElementById('remainingSlot').textContent = data.remaining;
+      } else {
+        document.getElementById('remainingSlot').textContent = 'Error';
       }
+    } catch {
+      document.getElementById('remainingSlot').textContent = 'Error';
+    }
+  }
+
+  fetchSlot();
+
+  // =========================
+  // SUBMIT BOOKING
+  // =========================
+  document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const paket = document.getElementById('package').value;
+
+    if (!paket) {
+      alert('Silakan pilih paket!');
+      return;
     }
 
-    fetchSlot();
+    // 🔑 buka tab WA dari user action (anti popup-block)
+    const waWindow = window.open('', '_blank');
 
-    // Submit booking
-    document.getElementById('bookingForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const name = document.getElementById('name').value;
-      const email = document.getElementById('email').value;
-      const paket = document.getElementById('package').value;
+    try {
+      const res = await fetch('/api/book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, paket })
+      });
 
-      if (!paket) {
-        alert('Silakan pilih paket!');
-        return;
+      const data = await res.json();
+
+      if (data.success) {
+        // refresh slot
+        fetchSlot();
+
+        // 🔄 reset form
+        document.getElementById('bookingForm').reset();
+
+        // 🔁 redirect ke WhatsApp
+        waWindow.location.href = data.waLink;
+      } else {
+        waWindow.close();
+        alert(`Gagal: ${data.error}`);
       }
+    } catch (err) {
+      waWindow.close();
+      alert('Terjadi error saat booking.');
+    }
+  });
+</script>
 
-      try {
-        const res = await fetch('/api/book', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, paket })
-        });
-        const data = await res.json();
-
-        if (data.success) {
-          // Refresh sisa slot
-          fetchSlot();
-          // Redirect ke WhatsApp otomatis
-          window.open(data.waLink, "_blank");
-        } else {
-          alert(`Gagal: ${data.error}`);
-        }
-      } catch (err) {
-        alert('Terjadi error saat booking.');
-      }
-    });
-  </script>
 </body>
 </html>
