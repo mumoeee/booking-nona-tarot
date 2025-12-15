@@ -24,6 +24,56 @@
   <h2>Sisa Slot Hari Ini:</h2>
   <div id="remainingSlot">Loading...</div>
 
-  <script src="book.js"></script>
+  <script>
+    // Fungsi ambil sisa slot
+    async function fetchSlot() {
+      try {
+        const res = await fetch('/api/slot'); // ganti sesuai endpoint slot-mu di Vercel
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('remainingSlot').textContent = data.remaining;
+        } else {
+          document.getElementById('remainingSlot').textContent = 'Error mengambil slot';
+        }
+      } catch (err) {
+        document.getElementById('remainingSlot').textContent = 'Error mengambil slot';
+      }
+    }
+
+    fetchSlot();
+
+    // Submit booking
+    document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const paket = document.getElementById('package').value;
+
+      if (!paket) {
+        alert('Silakan pilih paket!');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/book', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, paket })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          // Refresh sisa slot
+          fetchSlot();
+          // Redirect ke WhatsApp otomatis
+          window.location.href = data.waLink;
+        } else {
+          alert(`Gagal: ${data.error}`);
+        }
+      } catch (err) {
+        alert('Terjadi error saat booking.');
+      }
+    });
+  </script>
 </body>
 </html>
