@@ -66,7 +66,7 @@
           // Refresh sisa slot
           fetchSlot();
           // Redirect ke WhatsApp otomatis
-          window.location.href = data.waLink;
+          window.open(data.waLink, "_blank");
         } else {
           alert(`Gagal: ${data.error}`);
         }
