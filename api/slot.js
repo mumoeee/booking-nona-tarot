@@ -9,10 +9,8 @@ export default async function handler(req, res) {
 
     const values = result.data.values;
     const dailyQuotaRow = values.find(row => row[0] === 'daily_quota');
-    const holdRow = values.find(row => row[0] === 'hold_minutes');
 
     const remaining = dailyQuotaRow ? dailyQuotaRow[1] : 0;
-    const holdMinutes = holdRow ? holdRow[1] : 0;
 
     res.status(200).json({
       success: true,
