@@ -10,47 +10,20 @@
   <form id="bookingForm">
     <label>Nama: <input type="text" id="name" required></label><br><br>
     <label>Email: <input type="email" id="email" required></label><br><br>
+    <label>Paket:
+      <select id="package" required>
+        <option value="">-- Pilih Paket --</option>
+        <option value="Pertanyaan BPJS">Pertanyaan BPJS</option>
+        <option value="Bacaan Semesta">Bacaan Semesta</option>
+        <option value="All Package">All Package</option>
+      </select>
+    </label><br><br>
     <button type="submit">Booking</button>
   </form>
 
   <h2>Sisa Slot Hari Ini:</h2>
   <div id="remainingSlot">Loading...</div>
 
-  <script>
-    async function fetchSlot() {
-      try {
-        const res = await fetch('/api/slot');
-        const data = await res.json();
-        if (data.success) {
-          document.getElementById('remainingSlot').textContent = data.remaining;
-        } else {
-          document.getElementById('remainingSlot').textContent = 'Error mengambil slot';
-        }
-      } catch (err) {
-        document.getElementById('remainingSlot').textContent = 'Error mengambil slot';
-      }
-    }
-
-    fetchSlot();
-
-    document.getElementById('bookingForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const name = document.getElementById('name').value;
-      const email = document.getElementById('email').value;
-
-      try {
-        const res = await fetch('/api/book', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email })
-        });
-        const data = await res.json();
-        alert(data.success ? `Booking berhasil! Kode: ${data.code}` : `Gagal: ${data.error}`);
-        fetchSlot(); // refresh sisa slot
-      } catch (err) {
-        alert('Terjadi error saat booking.');
-      }
-    });
-  </script>
+  <script src="book.js"></script>
 </body>
 </html>
