@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Verifikasi Booking - Nona Tarot</title>
+</head>
+<body>
+  <h1>Verifikasi Booking</h1>
+
+  <form id="verifyForm">
+    <label>Kode Booking: <input type="text" id="bookingCode" required></label><br><br>
+    <button type="submit">Verifikasi</button>
+  </form>
+
+  <script>
+    document.getElementById('verifyForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const code = document.getElementById('bookingCode').value;
+
+      try {
+        const res = await fetch('/api/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code })
+        });
+        const data = await res.json();
+        alert(data.success ? `Booking valid: ${data.info}` : `Kode tidak valid!`);
+      } catch(err) {
+        alert('Terjadi error saat verifikasi.');
+      }
+    });
+  </script>
+</body>
+</html>
