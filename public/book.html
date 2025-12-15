@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Booking Slot - Nona Tarot</title>
+</head>
+<body>
+  <h1>Booking Slot</h1>
+  
+  <form id="bookingForm">
+    <label>Nama: <input type="text" id="name" required></label><br><br>
+    <label>Email: <input type="email" id="email" required></label><br><br>
+    <button type="submit">Booking</button>
+  </form>
+
+  <h2>Sisa Slot Hari Ini:</h2>
+  <div id="remainingSlot">Loading...</div>
+
+  <script>
+    // Fetch sisa slot
+    async function fetchSlot() {
+      try {
+        const res = await fetch('/api/slot'); // ganti sesuai endpoint Vercel-mu
+        const data = await res.json();
+        if(data.success) {
+          document.getElementById('remainingSlot').textContent = data.data.remaining;
+        } else {
+          document.getElementById('remainingSlot').textContent = 'Error mengambil slot';
+        }
+      } catch(e) {
+        document.getElementById('remainingSlot').textContent = 'Error mengambil slot';
+      }
+    }
+
+    fetchSlot();
+
+    // Submit booking
+    document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+
+      try {
+        const res = await fetch('/api/book', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email })
+        });
+        const data = await res.json();
+        alert(data.success ? `Booking berhasil! Kode: ${data.code}` : `Gagal: ${data.error}`);
+        fetchSlot(); // refresh sisa slot
+      } catch(err) {
+        alert('Terjadi error saat booking.');
+      }
+    });
+  </script>
+</body>
+</html>
