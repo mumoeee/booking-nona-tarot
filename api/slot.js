@@ -7,14 +7,22 @@ export default async function handler(req, res) {
       range: "CONFIG!A:B",
     });
 
+    const values = result.data.values;
+    const dailyQuotaRow = values.find(row => row[0] === 'daily_quota');
+    const holdRow = values.find(row => row[0] === 'hold_minutes');
+
+    const remaining = dailyQuotaRow ? dailyQuotaRow[1] : 0;
+    const holdMinutes = holdRow ? holdRow[1] : 0;
+
     res.status(200).json({
       success: true,
-      data: result.data.values,
+      remaining,
+      holdMinutes
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 }
