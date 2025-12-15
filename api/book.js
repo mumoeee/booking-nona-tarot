@@ -1,55 +1,49 @@
 import { sheets } from "../lib/sheets.js";
-import { v4 as uuidv4 } from "uuid"; // generate kode unik
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ success: false, error: "Method not allowed" });
+  if (req.method !== 'POST') {
+    return res.status(405).json({ success: false, error: 'Method not allowed' });
   }
 
+  const { name, email } = req.body;
+  if (!name || !email) return res.status(400).json({ success: false, error: 'Name & email required' });
+
   try {
-    const { name, phone, date } = req.body;
-    if (!name || !phone || !date) {
-      return res.status(400).json({ success: false, error: "Missing fields" });
-    }
-
-    // Ambil konfigurasi & slot
-    const configRes = await sheets.spreadsheets.values.get({
+    // Ambil daily quota
+    const config = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.SPREADSHEET_ID,
-      range: "CONFIG!A:B",
+      range: "CONFIG!A:B"
     });
 
-    const config = Object.fromEntries(configRes.data.values.slice(1));
-    const dailyQuota = parseInt(config.daily_quota);
+    const values = config.data.values;
+    const dailyQuotaRow = values.find(row => row[0] === 'daily_quota');
+    let remaining = dailyQuotaRow ? parseInt(dailyQuotaRow[1]) : 0;
 
-    // Ambil booking hari itu
-    const bookingRes = await sheets.spreadsheets.values.get({
-      spreadsheetId: process.env.SPREADSHEET_ID,
-      range: `BOOKING!A:D`,
-    });
-    const bookings = bookingRes.data.values || [];
-    const todayBookings = bookings.filter(b => b[2] === date);
-
-    if (todayBookings.length >= dailyQuota) {
-      return res.status(400).json({ success: false, error: "Slot penuh hari ini" });
+    if (remaining <= 0) {
+      return res.status(200).json({ success: false, error: 'Slot hari ini sudah penuh' });
     }
 
-    const bookingCode = uuidv4().slice(0, 8).toUpperCase(); // kode unik 8 karakter
+    // generate kode booking unik
+    const code = 'NONA-' + Date.now();
 
-    // Simpan booking baru
+    // Masukkan booking ke sheet (misal di sheet "BOOKING")
     await sheets.spreadsheets.values.append({
       spreadsheetId: process.env.SPREADSHEET_ID,
-      range: "BOOKING!A:D",
-      valueInputOption: "RAW",
-      resource: {
-        values: [[name, phone, date, bookingCode]],
-      },
+      range: "BOOKING!A:C",
+      valueInputOption: "USER_ENTERED",
+      resource: { values: [[code, name, email]] }
     });
 
-    res.status(200).json({
-      success: true,
-      message: "Booking berhasil",
-      bookingCode,
+    // Kurangi slot
+    remaining -= 1;
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: process.env.SPREADSHEET_ID,
+      range: "CONFIG!B2", // daily_quota cell
+      valueInputOption: "USER_ENTERED",
+      resource: { values: [[remaining]] }
     });
+
+    res.status(200).json({ success: true, code, remaining });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
