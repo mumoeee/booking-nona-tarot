@@ -46,7 +46,7 @@ export default async function handler(req, res) {
     });
 
     // Buat link WhatsApp otomatis
-    const waNumber = '085600045005';
+    const waNumber = '6285600045005';
     const waMessage = encodeURIComponent(
       `Halo, saya ingin konfirmasi booking:\nNama: ${name}\nEmail: ${email}\nPaket: ${paket}\nKode Booking: ${code}`
     );
