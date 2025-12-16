@@ -12,7 +12,6 @@
       --text-dark: #2e2e38;
       --text-muted: #6b6b7a;
       --border: #e6e4f0;
-      --bg: #faf9ff;
     }
 
     * {
@@ -38,7 +37,7 @@
     }
 
     .card {
-      background: #ffffff;
+      background: #fff;
       border-radius: 16px;
       padding: 24px;
       box-shadow: 0 20px 40px rgba(106, 76, 255, 0.12);
@@ -46,7 +45,7 @@
     }
 
     h1 {
-      margin: 0 0 8px;
+      margin: 0 0 6px;
       text-align: center;
       font-size: 24px;
       color: var(--primary);
@@ -56,7 +55,6 @@
       margin: 0 0 24px;
       text-align: center;
       font-size: 14px;
-      font-weight: 500;
       color: var(--text-muted);
     }
 
@@ -79,24 +77,22 @@
       gap: 6px;
     }
 
-    input,
-    select {
+    input, select {
       padding: 12px 14px;
       border-radius: 10px;
       border: 1px solid var(--border);
       font-size: 14px;
-      outline: none;
-      transition: 0.2s ease;
     }
 
-    input:focus,
-    select:focus {
+    input:focus, select:focus {
+      outline: none;
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(106, 76, 255, 0.15);
     }
 
     button {
       margin-top: 10px;
+      width: 100%;
       padding: 14px;
       border-radius: 12px;
       border: none;
@@ -105,124 +101,234 @@
       font-size: 15px;
       font-weight: 600;
       cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
 
-    button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 12px 24px rgba(106, 76, 255, 0.3);
+    button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
     }
 
-    button:active {
-      transform: translateY(0);
-      box-shadow: 0 8px 16px rgba(106, 76, 255, 0.25);
+    /* ===== MODAL ===== */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      z-index: 999;
     }
 
-    @media (max-width: 480px) {
-      .card {
-        padding: 20px;
-      }
+    .modal.show {
+      display: flex;
+    }
 
-      h1 {
-        font-size: 22px;
-      }
+    .modal-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 22px;
+      max-width: 420px;
+      width: 100%;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+      text-align: center;
+    }
+
+    .modal-card h3 {
+      margin: 0 0 10px;
+      color: var(--primary);
+    }
+
+    .modal-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .rekening-box {
+      background: var(--primary-soft);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .rekening-box strong {
+      display: block;
+      font-size: 16px;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    .btn-copy {
+      background: #fff;
+      border: 1px dashed var(--primary);
+      color: var(--primary);
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 14px;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    .btn-secondary {
+      background: #eee;
+      color: #333;
+      width: 100%;
+      margin-top: 8px;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="container">
-    <div class="card">
-      <h1>Booking Form</h1>
-      <h2>Sisa Slot Hari Ini: <span id="remainingSlot">Loading...</span></h2>
+<div class="container">
+  <div class="card">
+    <h1>Booking Form</h1>
+    <h2>Sisa Slot Hari Ini: <span id="remainingSlot">Loading...</span></h2>
 
-      <form id="bookingForm">
-        <label>
-          Nama
-          <input type="text" id="name" required>
-        </label>
+    <form id="bookingForm">
+      <label>Nama
+        <input type="text" id="name" required>
+      </label>
 
-        <label>
-          Email
-          <input type="email" id="email" required>
-        </label>
+      <label>Email
+        <input type="email" id="email" required>
+      </label>
 
-        <label>
-          Paket
-          <select id="package" required>
-            <option value="">-- Pilih Paket --</option>
-            <option value="Pertanyaan BPJS">Pertanyaan BPJS</option>
-            <option value="Bacaan Semesta">Bacaan Semesta</option>
-            <option value="All Package">All Package</option>
-          </select>
-        </label>
+      <label>Paket
+        <select id="package" required>
+          <option value="">-- Pilih Paket --</option>
+          <option value="Pertanyaan BPJS">Pertanyaan BPJS</option>
+          <option value="Bacaan Semesta">Bacaan Semesta</option>
+          <option value="All Package">All Package</option>
+        </select>
+      </label>
 
-        <button type="submit">Booking</button>
-      </form>
-    </div>
+      <button type="submit">Booking</button>
+    </form>
   </div>
+</div>
 
-  <script>
-    async function fetchSlot() {
-      try {
-        const res = await fetch('/api/slot');
-        const data = await res.json();
-        if (data.success) {
-          document.getElementById('remainingSlot').textContent = data.remaining;
-        } else {
-          document.getElementById('remainingSlot').textContent = 'Error';
-        }
-      } catch {
-        document.getElementById('remainingSlot').textContent = 'Error';
-      }
+<!-- ===== MODAL PEMBAYARAN ===== -->
+<div class="modal" id="paymentModal">
+  <div class="modal-card">
+    <h3>Informasi Pembayaran</h3>
+
+    <p>
+      Simpan nomor rekening berikut.<br>
+      <b>Jangan transfer sebelum chat admin.</b>
+    </p>
+
+    <div class="rekening-box">
+      <strong id="rekeningText">BRI • 308101002125500</strong>
+      a.n. Ranni Anugrah
+    </div>
+
+    <button class="btn-copy" onclick="copyRekening()">
+      📋 Salin Nomor Rekening
+    </button>
+
+    <p style="font-size:13px">
+      Transfer dilakukan setelah chat admin dan
+      kirim bukti pembayaran via WhatsApp.
+    </p>
+
+    <button id="btnProceed" onclick="proceedToWA()">Lanjut ke WhatsApp</button>
+    <button class="btn-secondary" onclick="closeModal()">Batal</button>
+  </div>
+</div>
+
+<script>
+  let formData = {};
+  let waWindow;
+
+  async function fetchSlot() {
+    try {
+      const res = await fetch('/api/slot');
+      const data = await res.json();
+      document.getElementById('remainingSlot').textContent =
+        data.success ? data.remaining : 'Error';
+    } catch {
+      document.getElementById('remainingSlot').textContent = 'Error';
+    }
+  }
+
+  fetchSlot();
+
+  document.getElementById('bookingForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    formData = {
+      name: name.value,
+      email: email.value,
+      paket: package.value
+    };
+
+    if (!formData.paket) {
+      alert('Silakan pilih paket!');
+      return;
     }
 
-    fetchSlot();
+    document.getElementById('paymentModal').classList.add('show');
+  });
 
-    document.getElementById('bookingForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
+  function closeModal() {
+    document.getElementById('paymentModal').classList.remove('show');
+  }
 
-      const form = e.target;
-      const name = document.getElementById('name').value;
-      const email = document.getElementById('email').value;
-      const paket = document.getElementById('package').value;
+  // COPY REKENING (AMAN SAFARI / iOS)
+  function copyRekening() {
+    const rekening = document
+      .getElementById('rekeningText')
+      .innerText.replace(/\D/g, '');
 
-      if (!paket) {
-        alert('Silakan pilih paket!');
-        return;
-      }
+    const input = document.createElement('input');
+    input.value = rekening;
+    document.body.appendChild(input);
+    input.select();
+    input.setSelectionRange(0, 99999);
+    document.execCommand('copy');
+    document.body.removeChild(input);
 
-      // buka tab WA dari user action (anti popup block)
-      const waWindow = window.open('', '_blank');
+    alert('Nomor rekening berhasil disalin');
+  }
 
-      try {
-        const res = await fetch('/api/book', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, paket })
-        });
+  async function proceedToWA() {
+    const btn = document.getElementById('btnProceed');
+    btn.disabled = true;
+    btn.innerText = 'Memproses...';
 
-        const data = await res.json();
+    closeModal();
+    waWindow = window.open('', '_blank');
 
-        if (data.success) {
-          fetchSlot();
+    try {
+      const res = await fetch('/api/book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
 
-          // reset form biar kosong lagi
-          form.reset();
+      const data = await res.json();
 
-          // redirect ke WhatsApp
-          waWindow.location.href = data.waLink;
-        } else {
-          waWindow.close();
-          alert(`Gagal: ${data.error}`);
-        }
-      } catch (err) {
+      if (data.success) {
+        fetchSlot();
+        document.getElementById('bookingForm').reset();
+        waWindow.location.href = data.waLink;
+      } else {
         waWindow.close();
-        alert('Terjadi error saat booking.');
+        alert(data.error);
       }
-    });
-  </script>
+    } catch {
+      waWindow.close();
+      alert('Terjadi kesalahan');
+    } finally {
+      btn.disabled = false;
+      btn.innerText = 'Lanjut ke WhatsApp';
+    }
+  }
+</script>
 
 </body>
 </html>
