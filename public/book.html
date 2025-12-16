@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -239,6 +240,7 @@
 
 <script>
   let formData = {};
+  let waWindow = null;
 
   async function fetchSlot() {
     try {
@@ -275,19 +277,26 @@
   }
 
   function copyRekening() {
-    const rekening = document.getElementById('rekeningText').innerText.replace(/\D/g, '');
+    const rekening = document
+      .getElementById('rekeningText')
+      .innerText.replace(/\D/g, '');
+
     const input = document.createElement('input');
     input.value = rekening;
     document.body.appendChild(input);
     input.select();
     document.execCommand('copy');
     document.body.removeChild(input);
+
     alert('Nomor rekening berhasil disalin');
   }
 
   async function proceedToWA() {
     const btn = document.getElementById('btnProceed');
     const form = document.getElementById('bookingForm');
+
+    // 🔥 INI KUNCI UTAMA (ANTI BLOCK)
+    waWindow = window.open('', '_blank');
 
     btn.disabled = true;
     btn.innerText = 'Memproses...';
@@ -303,16 +312,20 @@
       const data = await res.json();
 
       if (!data.success) {
+        waWindow.close();
         alert(data.error || 'Booking gagal');
         return;
       }
 
+      // reset & update UI
       form.reset();
       fetchSlot();
 
-      window.location.href = data.waLink;
+      // 🔥 redirect WA (AMAN)
+      waWindow.location.href = data.waLink;
 
     } catch (err) {
+      waWindow.close();
       alert('Terjadi kesalahan koneksi');
       console.error(err);
     } finally {
