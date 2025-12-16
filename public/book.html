@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Booking - Nona Tarot</title>
 
   <style>
@@ -226,13 +226,10 @@
       a.n. Ranni Anugrah Pramudhita
     </div>
 
-    <button class="btn-copy" onclick="copyRekening()">
-      📋 Salin Nomor Rekening
-    </button>
+    <button class="btn-copy" onclick="copyRekening()">📋 Salin Nomor Rekening</button>
 
     <p style="font-size:13px">
-      Transfer dilakukan setelah chat admin dan
-      kirim bukti pembayaran via WhatsApp.
+      Transfer dilakukan setelah chat admin dan kirim bukti pembayaran via WhatsApp.
     </p>
 
     <button id="btnProceed" onclick="proceedToWA()">Lanjut ke WhatsApp</button>
@@ -242,7 +239,6 @@
 
 <script>
   let formData = {};
-  let waWindow;
 
   async function fetchSlot() {
     try {
@@ -261,13 +257,13 @@
     e.preventDefault();
 
     formData = {
-      name: name.value,
-      email: email.value,
-      paket: package.value
+      name: document.getElementById('name').value,
+      email: document.getElementById('email').value,
+      paket: document.getElementById('package').value
     };
 
     if (!formData.paket) {
-      alert('Silakan pilih paket!');
+      alert('Silakan pilih paket');
       return;
     }
 
@@ -278,51 +274,52 @@
     document.getElementById('paymentModal').classList.remove('show');
   }
 
-  // COPY REKENING (AMAN SAFARI / iOS)
   function copyRekening() {
-    const rekening = document
-      .getElementById('rekeningText')
-      .innerText.replace(/\D/g, '');
-
+    const rekening = document.getElementById('rekeningText').innerText.replace(/\D/g, '');
     const input = document.createElement('input');
     input.value = rekening;
     document.body.appendChild(input);
     input.select();
-    input.setSelectionRange(0, 99999);
     document.execCommand('copy');
     document.body.removeChild(input);
-
     alert('Nomor rekening berhasil disalin');
   }
 
-    async function proceedToWA() {
-      const btn = btnProceed;
-      btn.disabled = true;
-      btn.innerText = 'Memproses...';
-      closeModal();
+  async function proceedToWA() {
+    const btn = document.getElementById('btnProceed');
+    const form = document.getElementById('bookingForm');
 
-      try {
-        const res = await fetch('/api/book', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData)
-        });
-        const data = await res.json();
+    btn.disabled = true;
+    btn.innerText = 'Memproses...';
+    closeModal();
 
-        if (data.success) {
-          bookingForm.reset();
-          fetchSlot();
-          window.location.href = data.waLink; // SAFARI SAFE
-        } else {
-          alert(data.error);
-        }
-      } catch {
-        alert('Terjadi kesalahan');
-      } finally {
-        btn.disabled = false;
-        btn.innerText = 'Lanjut ke WhatsApp';
+    try {
+      const res = await fetch('/api/book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await res.json();
+
+      if (!data.success) {
+        alert(data.error || 'Booking gagal');
+        return;
       }
+
+      form.reset();
+      fetchSlot();
+
+      window.location.href = data.waLink;
+
+    } catch (err) {
+      alert('Terjadi kesalahan koneksi');
+      console.error(err);
+    } finally {
+      btn.disabled = false;
+      btn.innerText = 'Lanjut ke WhatsApp';
     }
+  }
 </script>
 
 </body>
