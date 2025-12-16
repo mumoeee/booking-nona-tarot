@@ -295,39 +295,34 @@
     alert('Nomor rekening berhasil disalin');
   }
 
-  async function proceedToWA() {
-    const btn = document.getElementById('btnProceed');
-    btn.disabled = true;
-    btn.innerText = 'Memproses...';
+    async function proceedToWA() {
+      const btn = btnProceed;
+      btn.disabled = true;
+      btn.innerText = 'Memproses...';
+      closeModal();
 
-    closeModal();
-    waWindow = window.open('', '_blank');
+      try {
+        const res = await fetch('/api/book', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+        const data = await res.json();
 
-    try {
-      const res = await fetch('/api/book', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-
-      const data = await res.json();
-
-      if (data.success) {
-        fetchSlot();
-        document.getElementById('bookingForm').reset();
-        waWindow.location.href = data.waLink;
-      } else {
-        waWindow.close();
-        alert(data.error);
+        if (data.success) {
+          bookingForm.reset();
+          fetchSlot();
+          window.location.href = data.waLink; // SAFARI SAFE
+        } else {
+          alert(data.error);
+        }
+      } catch {
+        alert('Terjadi kesalahan');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Lanjut ke WhatsApp';
       }
-    } catch {
-      waWindow.close();
-      alert('Terjadi kesalahan');
-    } finally {
-      btn.disabled = false;
-      btn.innerText = 'Lanjut ke WhatsApp';
     }
-  }
 </script>
 
 </body>
