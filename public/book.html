@@ -1,294 +1,284 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Booking - Nona Tarot</title>
-
-  <style>
-    :root {
-      --primary: #6a4cff;
-      --primary-soft: #f2efff;
-      --text-dark: #2e2e38;
-      --text-muted: #6b6b7a;
-      --border: #e6e4f0;
+<!DOCTYPE html>  <html lang="id">  
+<head>  
+  <meta charset="UTF-8" />  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>  
+  <title>Booking - Nona Tarot</title>    <style>  
+    :root {  
+      --primary: #6a4cff;  
+      --primary-soft: #f2efff;  
+      --text-dark: #2e2e38;  
+      --text-muted: #6b6b7a;  
+      --border: #e6e4f0;  
+    }  
+  
+    * {  
+      box-sizing: border-box;  
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",  
+        Roboto, Inter, Helvetica, Arial, sans-serif;  
+    }  
+  
+    body {  
+      margin: 0;  
+      background: linear-gradient(180deg, #f6f3ff, #ffffff);  
+      min-height: 100vh;  
+      display: flex;  
+      justify-content: center;  
+      align-items: center;  
+      padding: 16px;  
+      color: var(--text-dark);  
+    }  
+  
+    .container {  
+      width: 100%;  
+      max-width: 420px;  
+    }  
+  
+    .card {  
+      background: #fff;  
+      border-radius: 16px;  
+      padding: 24px;  
+      box-shadow: 0 20px 40px rgba(106, 76, 255, 0.12);  
+      border: 1px solid var(--border);  
+    }  
+  
+    h1 {  
+      margin: 0 0 6px;  
+      text-align: center;  
+      font-size: 24px;  
+      color: var(--primary);  
+    }  
+  
+    h2 {  
+      margin: 0 0 24px;  
+      text-align: center;  
+      font-size: 14px;  
+      color: var(--text-muted);  
+    }  
+  
+    h2 span {  
+      color: var(--primary);  
+      font-weight: 600;  
+    }  
+  
+    form {  
+      display: flex;  
+      flex-direction: column;  
+      gap: 14px;  
+    }  
+  
+    label {  
+      font-size: 14px;  
+      color: var(--text-muted);  
+      display: flex;  
+      flex-direction: column;  
+      gap: 6px;  
+    }  
+  
+    input, select {  
+      padding: 12px 14px;  
+      border-radius: 10px;  
+      border: 1px solid var(--border);  
+      font-size: 14px;  
+    }  
+  
+    input:focus, select:focus {  
+      outline: none;  
+      border-color: var(--primary);  
+      box-shadow: 0 0 0 3px rgba(106, 76, 255, 0.15);  
+    }  
+  
+    button {  
+      margin-top: 10px;  
+      width: 100%;  
+      padding: 14px;  
+      border-radius: 12px;  
+      border: none;  
+      background: linear-gradient(135deg, #6a4cff, #8b6cff);  
+      color: #fff;  
+      font-size: 15px;  
+      font-weight: 600;  
+      cursor: pointer;  
+    }  
+  
+    button:disabled {  
+      opacity: 0.7;  
+      cursor: not-allowed;  
+    }  
+  
+    /* ===== MODAL ===== */  
+    .modal {  
+      position: fixed;  
+      inset: 0;  
+      background: rgba(0,0,0,0.45);  
+      display: none;  
+      justify-content: center;  
+      align-items: center;  
+      padding: 16px;  
+      z-index: 999;  
+    }  
+  
+    .modal.show {  
+      display: flex;  
+    }  
+  
+    .modal-card {  
+      background: #fff;  
+      border-radius: 16px;  
+      padding: 22px;  
+      max-width: 420px;  
+      width: 100%;  
+      box-shadow: 0 30px 60px rgba(0,0,0,0.25);  
+      text-align: center;  
+    }  
+  
+    .modal-card h3 {  
+      margin: 0 0 10px;  
+      color: var(--primary);  
+    }  
+  
+    .modal-card p {  
+      font-size: 14px;  
+      color: var(--text-muted);  
+      line-height: 1.6;  
+      margin-bottom: 14px;  
+    }  
+  
+    .rekening-box {  
+      background: var(--primary-soft);  
+      border-radius: 12px;  
+      padding: 14px;  
+      margin-bottom: 12px;  
+    }  
+  
+    .rekening-box strong {  
+      display: block;  
+      font-size: 16px;  
+      color: var(--primary);  
+      margin-bottom: 6px;  
+    }  
+  
+    .btn-copy {  
+      background: #fff;  
+      border: 1px dashed var(--primary);  
+      color: var(--primary);  
+      padding: 10px;  
+      border-radius: 10px;  
+      font-size: 14px;  
+      cursor: pointer;  
+      width: 100%;  
+      margin-bottom: 10px;  
+    }  
+  
+    .btn-secondary {  
+      background: #eee;  
+      color: #333;  
+      width: 100%;  
+      margin-top: 8px;  
     }
-
-    * {
-      box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-        Roboto, Inter, Helvetica, Arial, sans-serif;
-    }
-
-    body {
-      margin: 0;
-      background: linear-gradient(180deg, #f6f3ff, #ffffff);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 16px;
-      color: var(--text-dark);
-    }
-
-    .container {
-      width: 100%;
-      max-width: 420px;
-    }
-
-    .card {
-      background: #fff;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 20px 40px rgba(106, 76, 255, 0.12);
-      border: 1px solid var(--border);
-    }
-
-    h1 {
-      margin: 0 0 6px;
-      text-align: center;
-      font-size: 24px;
-      color: var(--primary);
-    }
-
-    h2 {
-      margin: 0 0 24px;
-      text-align: center;
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-
-    h2 span {
-      color: var(--primary);
-      font-weight: 600;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    label {
-      font-size: 14px;
-      color: var(--text-muted);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    input, select {
-      padding: 12px 14px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      font-size: 14px;
-    }
-
-    input:focus, select:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(106, 76, 255, 0.15);
-    }
-
-    button {
-      margin-top: 10px;
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      border: none;
-      background: linear-gradient(135deg, #6a4cff, #8b6cff);
-      color: #fff;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    button:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
-    }
-
-    /* ===== MODAL ===== */
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.45);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      padding: 16px;
-      z-index: 999;
-    }
-
-    .modal.show {
-      display: flex;
-    }
-
-    .modal-card {
-      background: #fff;
-      border-radius: 16px;
-      padding: 22px;
-      max-width: 420px;
-      width: 100%;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.25);
-      text-align: center;
-    }
-
-    .modal-card h3 {
-      margin: 0 0 10px;
-      color: var(--primary);
-    }
-
-    .modal-card p {
-      font-size: 14px;
-      color: var(--text-muted);
-      line-height: 1.6;
-      margin-bottom: 14px;
-    }
-
-    .rekening-box {
-      background: var(--primary-soft);
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 12px;
-    }
-
-    .rekening-box strong {
-      display: block;
-      font-size: 16px;
-      color: var(--primary);
-      margin-bottom: 6px;
-    }
-
-    /* ===== COPY BUTTON ===== */
-    .btn-copy {
-      background: #fff;
-      border: 1px dashed var(--primary);
-      color: var(--primary);
-      padding: 10px;
-      border-radius: 10px;
-      font-size: 14px;
-      cursor: pointer;
-      width: 100%;
-      margin-bottom: 10px;
-      transition: all 0.25s ease;
-    }
-
+    
     .btn-copy.copied {
-      background: linear-gradient(135deg, #6a4cff, #8b6cff);
-      color: #fff;
-      border: none;
-    }
+  background: linear-gradient(135deg, #6a4cff, #8b6cff);
+  color: #fff;
+  border: none;
+}
 
-    .btn-secondary {
-      background: #eee;
-      color: #333;
-      width: 100%;
-      margin-top: 8px;
-    }
-  </style>
-</head>
+.btn-copy.copied::after {
+  content: " ✓";
+  font-weight: 600;
+}
+  </style>  </head>  <body>  <div class="container">  
+  <div class="card">  
+    <h1>Booking Form</h1>  
+    <h2>Sisa Slot Hari Ini: <span id="remainingSlot">Loading...</span></h2>  <form id="bookingForm">  
+  <label>Nama  
+    <input type="text" id="name" required>  
+  </label>  
 
-<body>
+  <label>Email  
+    <input type="email" id="email" required>  
+  </label>  
 
-<div class="container">
-  <div class="card">
-    <h1>Booking Form</h1>
-    <h2>Sisa Slot Hari Ini: <span id="remainingSlot">Loading...</span></h2>
+  <label>Paket  
+    <select id="package" required>  
+      <option value="">-- Pilih Paket --</option>  
+      <option value="Pertanyaan BPJS">Pertanyaan BPJS</option>  
+      <option value="Bacaan Semesta">Bacaan Semesta</option>  
+      <option value="All Package">All Package</option>  
+    </select>  
+  </label>  
 
-    <form id="bookingForm">
-      <label>Nama
-        <input type="text" id="name" required>
-      </label>
+  <button type="submit">Booking</button>  
+</form>
 
-      <label>Email
-        <input type="email" id="email" required>
-      </label>
+  </div>  
+</div>  <!-- ===== MODAL PEMBAYARAN ===== -->  <div class="modal" id="paymentModal">  
+  <div class="modal-card">  
+    <h3>Informasi Pembayaran</h3>  <p>  
+  Simpan nomor rekening berikut.<br>  
+  <b>Jangan transfer sebelum chat admin.</b>  
+</p>  
 
-      <label>Paket
-        <select id="package" required>
-          <option value="">-- Pilih Paket --</option>
-          <option value="Pertanyaan BPJS">Pertanyaan BPJS</option>
-          <option value="Bacaan Semesta">Bacaan Semesta</option>
-          <option value="All Package">All Package</option>
-        </select>
-      </label>
+<div class="rekening-box">  
+  <strong id="rekeningText">BRI • 308101002125500</strong>  
+  a.n. Ranni Anugrah Pramudhita  
+</div>  
 
-      <button type="submit">Booking</button>
-    </form>
-  </div>
-</div>
+<button class="btn-copy" onclick="copyRekening()">📋 Salin Nomor Rekening</button>  
 
-<!-- ===== MODAL PEMBAYARAN ===== -->
-<div class="modal" id="paymentModal">
-  <div class="modal-card">
-    <h3>Informasi Pembayaran</h3>
+<p style="font-size:13px">  
+  Transfer dilakukan setelah chat admin dan kirim bukti pembayaran via WhatsApp.  
+</p>  
 
-    <p>
-      Simpan nomor rekening berikut.<br>
-      <b>Jangan transfer sebelum chat admin.</b>
-    </p>
+<button id="btnProceed" onclick="proceedToWA()">Lanjut ke WhatsApp</button>  
+<button class="btn-secondary" onclick="closeModal()">Batal</button>
 
-    <div class="rekening-box">
-      <strong id="rekeningText">BRI • 308101002125500</strong>
-      a.n. Ranni Anugrah Pramudhita
-    </div>
-
-    <button class="btn-copy" id="copyBtn" onclick="copyRekening()">
-      📋 Salin Nomor Rekening
-    </button>
-
-    <p style="font-size:13px">
-      Transfer dilakukan setelah chat admin dan kirim bukti pembayaran via WhatsApp.
-    </p>
-
-    <button id="btnProceed" onclick="proceedToWA()">Lanjut ke WhatsApp</button>
-    <button class="btn-secondary" onclick="closeModal()">Batal</button>
-  </div>
-</div>
-
-<script>
-  let formData = {};
-  let waWindow = null;
-
-  async function fetchSlot() {
-    try {
-      const res = await fetch('/api/slot');
-      const data = await res.json();
-      document.getElementById('remainingSlot').textContent =
-        data.success ? data.remaining : 'Error';
-    } catch {
-      document.getElementById('remainingSlot').textContent = 'Error';
-    }
-  }
-
-  fetchSlot();
-
-  document.getElementById('bookingForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    formData = {
-      name: name.value,
-      email: email.value,
-      paket: package.value
-    };
-
-    if (!formData.paket) {
-      alert('Silakan pilih paket');
-      return;
-    }
-
-    paymentModal.classList.add('show');
-  });
-
-  function closeModal() {
-    paymentModal.classList.remove('show');
-  }
+  </div>  
+</div>  <script>  
+  let formData = {};  
+  let waWindow = null;  
+  
+  async function fetchSlot() {  
+    try {  
+      const res = await fetch('/api/slot');  
+      const data = await res.json();  
+      document.getElementById('remainingSlot').textContent =  
+        data.success ? data.remaining : 'Error';  
+    } catch {  
+      document.getElementById('remainingSlot').textContent = 'Error';  
+    }  
+  }  
+  
+  fetchSlot();  
+  
+  document.getElementById('bookingForm').addEventListener('submit', (e) => {  
+    e.preventDefault();  
+  
+    formData = {  
+      name: document.getElementById('name').value,  
+      email: document.getElementById('email').value,  
+      paket: document.getElementById('package').value  
+    };  
+  
+    if (!formData.paket) {  
+      alert('Silakan pilih paket');  
+      return;  
+    }  
+  
+    document.getElementById('paymentModal').classList.add('show');  
+  });  
+  
+  function closeModal() {  
+    document.getElementById('paymentModal').classList.remove('show');  
+  }  
+  
 
   function copyRekening() {
-    const btn = document.getElementById('copyBtn');
-    const rekening = rekeningText.innerText.replace(/\D/g, '');
+    const btn = document.querySelector('.btn-copy');
+    const rekening = document
+      .getElementById('rekeningText')
+      .innerText.replace(/\D/g, '');
 
+    // fallback aman untuk iOS & iframe
     const input = document.createElement('input');
     input.value = rekening;
     document.body.appendChild(input);
@@ -296,8 +286,9 @@
     document.execCommand('copy');
     document.body.removeChild(input);
 
+    // efek visual
     btn.classList.add('copied');
-    btn.innerText = 'Tersalin ✓';
+    btn.innerText = 'Tersalin ';
 
     setTimeout(() => {
       btn.classList.remove('copied');
@@ -305,44 +296,48 @@
     }, 2000);
   }
 
-  async function proceedToWA() {
-    const btn = btnProceed;
-    const form = bookingForm;
-
-    waWindow = window.open('', '_blank');
-
-    btn.disabled = true;
-    btn.innerText = 'Memproses...';
-    closeModal();
-
-    try {
-      const res = await fetch('/api/book', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-
-      const data = await res.json();
-
-      if (!data.success) {
-        waWindow.close();
-        alert(data.error || 'Booking gagal');
-        return;
-      }
-
-      form.reset();
-      fetchSlot();
-      waWindow.location.href = data.waLink;
-
-    } catch (err) {
-      waWindow.close();
-      alert('Terjadi kesalahan koneksi');
-    } finally {
-      btn.disabled = false;
-      btn.innerText = 'Lanjut ke WhatsApp';
-    }
-  }
-</script>
-
-</body>
+  
+  async function proceedToWA() {  
+    const btn = document.getElementById('btnProceed');  
+    const form = document.getElementById('bookingForm');  
+  
+    // 🔥 INI KUNCI UTAMA (ANTI BLOCK)  
+    waWindow = window.open('', '_blank');  
+  
+    btn.disabled = true;  
+    btn.innerText = 'Memproses...';  
+    closeModal();  
+  
+    try {  
+      const res = await fetch('/api/book', {  
+        method: 'POST',  
+        headers: { 'Content-Type': 'application/json' },  
+        body: JSON.stringify(formData)  
+      });  
+  
+      const data = await res.json();  
+  
+      if (!data.success) {  
+        waWindow.close();  
+        alert(data.error || 'Booking gagal');  
+        return;  
+      }  
+  
+      // reset & update UI  
+      form.reset();  
+      fetchSlot();  
+  
+      // 🔥 redirect WA (AMAN)  
+      waWindow.location.href = data.waLink;  
+  
+    } catch (err) {  
+      waWindow.close();  
+      alert('Terjadi kesalahan koneksi');  
+      console.error(err);  
+    } finally {  
+      btn.disabled = false;  
+      btn.innerText = 'Lanjut ke WhatsApp';  
+    }  
+  }  
+</script>  </body>  
 </html>
