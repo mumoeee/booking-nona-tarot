@@ -5,9 +5,9 @@ export default async function handler(req, res) {
     return res.status(405).json({ success: false, error: 'Method not allowed' });
   }
 
-  const { name, email, paket } = req.body;
-  if (!name || !email || !paket) {
-    return res.status(400).json({ success: false, error: 'Name, email, dan paket required' });
+  const { name, email, paket, story } = req.body;
+  if (!name || !email || !paket || !story ) {
+    return res.status(400).json({ success: false, error: 'Name, email, story, dan paket required' });
   }
 
   try {
@@ -31,9 +31,9 @@ export default async function handler(req, res) {
     // Masukkan booking ke sheet "BOOKING"
     await sheets.spreadsheets.values.append({
       spreadsheetId: process.env.SPREADSHEET_ID,
-      range: "BOOKING!A:D", // Tambah kolom paket
+      range: "BOOKING!A:E", // Tambah kolom paket
       valueInputOption: "USER_ENTERED",
-      resource: { values: [[code, name, email, paket]] }
+      resource: { values: [[code, name, email, paket, story ]] }
     });
 
     // Kurangi sisa slot
@@ -48,7 +48,7 @@ export default async function handler(req, res) {
     // Buat link WhatsApp otomatis
     const waNumber = '6285600045005';
     const waMessage = encodeURIComponent(
-      `Halo, saya ingin konfirmasi booking:\nNama: ${name}\nEmail: ${email}\nPaket: ${paket}\nKode Booking: ${code}\n\nBukti Pembayaran ke Rekening BRI 308101002125500 a.n. Ranni Anugrah Pramudhita akan saya kirim setelah pesan konfirmasi ini`
+      `Halo, saya ingin konfirmasi booking:\nNama: ${name}\nEmail: ${email}\nPaket: ${paket}\nCerita/Pertanyaan: ${story}\nKode Booking: ${code}\n\nBukti Pembayaran ke Rekening BRI 308101002125500 a.n. Ranni Anugrah Pramudhita akan saya kirim setelah pesan konfirmasi ini`
     );
     const waLink = `https://wa.me/${waNumber}?text=${waMessage}`;
 
