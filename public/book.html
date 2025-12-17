@@ -2,7 +2,12 @@
 <head>  
   <meta charset="UTF-8" />  
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>  
-  <title>Booking - Nona Tarot</title>    <style>  
+  <title>Booking - Nona Tarot</title> 
+  
+  <!-- ✨ Magical Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>  
     :root {  
       --primary: #6a4cff;  
       --primary-soft: #f2efff;  
@@ -13,8 +18,6 @@
   
     * {  
       box-sizing: border-box;  
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",  
-        Roboto, Inter, Helvetica, Arial, sans-serif;  
     }  
   
     body {  
@@ -25,7 +28,8 @@
       justify-content: center;  
       align-items: center;  
       padding: 16px;  
-      color: var(--text-dark);  
+      color: var(--text-dark); 
+      font-family: "Playfair Display", serif;
     }  
   
     .container {  
@@ -59,6 +63,31 @@
       color: var(--primary);  
       font-weight: 600;  
     }  
+  
+    /* 🔮 Ritual Guide */
+    .ritual {
+      background: var(--primary-soft);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 22px;
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--text-dark);
+    }
+
+    .ritual b {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .ritual .title {
+      text-align: center;
+      font-size: 16px;
+      margin-bottom: 12px;
+      color: var(--primary);
+      letter-spacing: 0.4px;
+    }
   
     form {  
       display: flex;  
@@ -97,7 +126,8 @@
       color: #fff;  
       font-size: 15px;  
       font-weight: 600;  
-      cursor: pointer;  
+      cursor: pointer;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;  
     }  
   
     button:disabled {  
@@ -194,6 +224,7 @@ textarea {
   font-size: 14px;
   resize: vertical;
   min-height: 120px;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 textarea:focus {
@@ -204,7 +235,27 @@ textarea:focus {
   </style>  </head>  <body>  <div class="container">  
   <div class="card">  
     <h1>Booking Form</h1>  
-    <h2>Sisa Slot Hari Ini: <span id="remainingSlot">Loading...</span></h2>  <form id="bookingForm">  
+    <h2>Sisa Slot Hari Ini: <span id="remainingSlot">Loading...</span></h2> 
+    
+     <!-- 🔮 CARA PEMESANAN -->
+    <div class="ritual">
+      <div class="title">🔮 Cara Pemesanan ✨</div>
+
+      Semesta selalu memberi tanda, pastikan <b>slot hari ini masih tersedia</b>
+      sebelum memulai perjalananmu 🌙<br><br>
+
+      Jika slot tersedia, isi <b>form booking</b> dengan niat dan cerita yang jujur.
+      Setiap kata akan membantu semesta membaca energimu ✨<br><br>
+
+      Setelah itu, kamu akan diarahkan ke <b>WhatsApp</b> untuk konfirmasi 💬
+      Mohon lakukan <b>pembayaran hanya setelah berhasil kirim pesan di WhatsApp</b>.<br><br>
+
+      Jangan lupa simpan dan kirim <b>bukti pembayaran</b>.
+      Setelah selesai, bacaanmu akan segera diproses 🔮💜
+    </div>
+  
+  <!-- FORM -->
+    <form id="bookingForm">  
   <label>Nama  
     <input type="text" id="name" required>  
   </label>  
@@ -216,9 +267,9 @@ textarea:focus {
   <label>Paket  
     <select id="package" required>  
       <option value="">-- Pilih Paket --</option>  
-      <option value="Pertanyaan BPJS">Pertanyaan BPJS</option>  
-      <option value="Bacaan Semesta">Bacaan Semesta</option>  
-      <option value="All Package">All Package</option>  
+      <option value="Pertanyaan BPJS">Pertanyaan BPJS (99000)</option>  
+      <option value="Bacaan Semesta">Bacaan Semesta (189000)</option>  
+      <option value="All Package">All Package (249000)</option>  
     </select>  
   </label>  
   
@@ -238,7 +289,7 @@ textarea:focus {
   <div class="modal-card">  
     <h3>Informasi Pembayaran</h3>  <p>  
   Simpan nomor rekening berikut.<br>  
-  <b>Jangan transfer sebelum chat admin.</b>  
+  <b>Jangan transfer sebelum berhasil kirim pesan WA.</b>  
 </p>  
 
 <div class="rekening-box">  
@@ -249,7 +300,7 @@ textarea:focus {
 <button class="btn-copy" onclick="copyRekening()">📋 Salin Nomor Rekening</button>  
 
 <p style="font-size:13px">  
-  Transfer dilakukan setelah chat admin dan kirim bukti pembayaran via WhatsApp.  
+  Transfer dilakukan setelah berhasil chat WA dan kirim bukti pembayaran via WhatsApp.  
 </p>  
 
 <button id="btnProceed" onclick="proceedToWA()">Lanjut ke WhatsApp</button>  
