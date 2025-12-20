@@ -419,7 +419,7 @@ Kode Booking: ${data.code}
 
     const waNumber = '6285600045005';
     const waUrl =
-      `https://api.whatsapp.com/send?phone=${waNumber}?text=${encodeURIComponent(message)}`;
+      `https://api.whatsapp.com/send?phone=${waNumber}&text=${encodeURIComponent(message)}`;
 
     waWindow.location.href = waUrl;
 
