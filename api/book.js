@@ -48,7 +48,7 @@ export default async function handler(req, res) {
     // Buat link WhatsApp otomatis
     const waNumber = '6285600045005';
     const waMessage = encodeURIComponent(
-      `\u{1F64D}\u{1F3FB}\u{200D}\u{2640}\u{FE0F}\u{1F52E} *HII NONA TAROT, BUKTI PEMBAYARAN KE BRI 308101002125500 a.n. RANNI ANUGRAH PRAMUDHITA AKAN AKU TRANSFER SETELAH PESAN INI TERKIRIM* \u{1F64D}\u{1F3FB}\u{200D}\u{2640}\u{FE0F}\u{1F52E}\n\nInformasi booking:\nNama: ${name}\nEmail: ${email}\nPaket: ${paket}\nCerita/Pertanyaan: ${story}\nKode Booking: ${code}`
+      `\uD83D\uDE4D\uD83C\uDFFB\u200D\u2640\uFE0F\uD83D\uDD2E *HII NONA TAROT, BUKTI PEMBAYARAN KE BRI 308101002125500 a.n. RANNI ANUGRAH PRAMUDHITA AKAN AKU TRANSFER SETELAH PESAN INI TERKIRIM* \uD83D\uDE4D\uD83C\uDFFB\u200D\u2640\uFE0F\uD83D\uDD2E\n\nInformasi booking:\nNama: ${name}\nEmail: ${email}\nPaket: ${paket}\nCerita/Pertanyaan: ${story}\nKode Booking: ${code}`
     );
     const waLink = `https://wa.me/${waNumber}?text=${waMessage}`;
 
