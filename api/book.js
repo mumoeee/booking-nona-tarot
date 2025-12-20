@@ -6,54 +6,67 @@ export default async function handler(req, res) {
   }
 
   const { name, email, paket, story } = req.body;
-  if (!name || !email || !paket || !story ) {
-    return res.status(400).json({ success: false, error: 'Name, email, story, dan paket required' });
+  if (!name || !email || !paket || !story) {
+    return res.status(400).json({
+      success: false,
+      error: 'Name, email, paket, dan story wajib diisi'
+    });
   }
 
   try {
-    // Ambil konfigurasi dari sheet
+    // ambil config
     const configRes = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.SPREADSHEET_ID,
       range: "CONFIG!A:B"
     });
 
-    const values = configRes.data.values;
+    const values = configRes.data.values || [];
     const dailyQuotaRow = values.find(row => row[0] === 'daily_quota');
     let remaining = dailyQuotaRow ? parseInt(dailyQuotaRow[1]) : 0;
 
     if (remaining <= 0) {
-      return res.status(200).json({ success: false, error: 'Slot hari ini sudah penuh' });
+      return res.status(200).json({
+        success: false,
+        error: 'Slot hari ini sudah penuh'
+      });
     }
 
-    // Generate kode booking unik
-    const code = 'NONA-' + Date.now();
+    const code = `NONA-${Date.now()}`;
 
-    // Masukkan booking ke sheet "BOOKING"
+    // simpan booking
     await sheets.spreadsheets.values.append({
       spreadsheetId: process.env.SPREADSHEET_ID,
-      range: "BOOKING!A:E", // Tambah kolom paket
+      range: "BOOKING!A:E",
       valueInputOption: "USER_ENTERED",
-      resource: { values: [[code, name, email, paket, story ]] }
+      resource: {
+        values: [[code, name, email, paket, story]]
+      }
     });
 
-    // Kurangi sisa slot
+    // update quota
     remaining -= 1;
     await sheets.spreadsheets.values.update({
       spreadsheetId: process.env.SPREADSHEET_ID,
-      range: "CONFIG!B2", // daily_quota cell
+      range: "CONFIG!B2",
       valueInputOption: "USER_ENTERED",
       resource: { values: [[remaining]] }
     });
 
-    // Buat link WhatsApp otomatis
-    const waNumber = '6285600045005';
-    const waMessage = encodeURIComponent(
-      `*HII NONA TAROT, BUKTI PEMBAYARAN KE BRI 308101002125500 a.n. RANNI ANUGRAH PRAMUDHITA AKAN AKU TRANSFER SETELAH PESAN INI TERKIRIM*\n\nInformasi booking:\nNama: ${name}\nEmail: ${email}\nPaket: ${paket}\nCerita/Pertanyaan: ${story}\nKode Booking: ${code}`
-    );
-    const waLink = `https://wa.me/${waNumber}?text=${waMessage}`;
+    // RETURN DATA SAJA
+    res.status(200).json({
+      success: true,
+      code,
+      remaining,
+      name,
+      email,
+      paket,
+      story
+    });
 
-    res.status(200).json({ success: true, code, remaining, waLink });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
   }
 }
