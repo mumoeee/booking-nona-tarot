@@ -402,9 +402,19 @@ textarea:focus {
       // reset & update UI  
       form.reset();  
       fetchSlot();  
-  
-      // 🔥 redirect WA (AMAN)  
-      waWindow.location.href = data.waLink;  
+
+// ✨ emoji hanya di frontend (AMAN 100%)
+const emojiHeader = '🔮🙇🏻‍♀️ ';
+const emojiFooter = ' 🙇🏻‍♀️🔮';
+
+const waUrlWithEmoji =
+  data.waLink.replace(
+    '*HII NONA TAROT, BUKTI PEMBAYARAN KE BRI 308101002125500 a.n. RANNI ANUGRAH PRAMUDHITA AKAN AKU TRANSFER SETELAH PESAN INI TERKIRIM*',
+    emojiHeader + '*HII NONA TAROT, BUKTI PEMBAYARAN KE BRI 308101002125500 a.n. RANNI ANUGRAH PRAMUDHITA AKAN AKU TRANSFER SETELAH PESAN INI TERKIRIM*'
+  ) + emojiFooter;
+
+// redirect WA
+waWindow.location.href = waUrlWithEmoji;
   
     } catch (err) {  
       waWindow.close();  
