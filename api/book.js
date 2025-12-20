@@ -48,7 +48,7 @@ export default async function handler(req, res) {
     // Buat link WhatsApp otomatis
     const waNumber = '6285600045005';
     const waMessage = encodeURIComponent(
-      `Halo, saya ingin konfirmasi booking:\nNama: ${name}\nEmail: ${email}\nPaket: ${paket}\nCerita/Pertanyaan: ${story}\nKode Booking: ${code}\n\nBukti Pembayaran ke Rekening BRI 308101002125500 a.n. Ranni Anugrah Pramudhita akan saya kirim setelah pesan konfirmasi ini`
+      `🙇🏻‍♀️🔮*HII NONA TAROT, BUKTI PEMBAYARAN KE BRI 308101002125500 a.n. RANNI ANUGRAH PRAMUDHITA AKAN AKU TRANSFER SETELAH PESAN INI TERKIRIM*🙇🏻‍♀️🔮\nInformasi booking:\nNama: ${name}\nEmail: ${email}\nPaket: ${paket}\nCerita/Pertanyaan: ${story}\nKode Booking: ${code}`
     );
     const waLink = `https://wa.me/${waNumber}?text=${waMessage}`;
 
