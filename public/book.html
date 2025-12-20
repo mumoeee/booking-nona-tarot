@@ -373,57 +373,66 @@ textarea:focus {
   }
 
   
-  async function proceedToWA() {  
-    const btn = document.getElementById('btnProceed');  
-    const form = document.getElementById('bookingForm');  
-  
-    // 🔥 INI KUNCI UTAMA (ANTI BLOCK)  
-    waWindow = window.open('', '_blank');  
-  
-    btn.disabled = true;  
-    btn.innerText = 'Memproses...';  
-    closeModal();  
-  
-    try {  
-      const res = await fetch('/api/book', {  
-        method: 'POST',  
-        headers: { 'Content-Type': 'application/json' },  
-        body: JSON.stringify(formData)  
-      });  
-  
-      const data = await res.json();  
-  
-      if (!data.success) {  
-        waWindow.close();  
-        alert(data.error || 'Booking gagal');  
-        return;  
-      }  
-  
-      // reset & update UI  
-      form.reset();  
-      fetchSlot();  
+async function proceedToWA() {
+  const btn = document.getElementById('btnProceed');
+  const form = document.getElementById('bookingForm');
 
-// ✨ emoji hanya di frontend (AMAN 100%)
-const emojiHeader = '🔮🙇🏻‍♀️ ';
-const emojiFooter = ' 🙇🏻‍♀️🔮';
+  // anti popup block
+  waWindow = window.open('', '_blank');
 
-const waUrlWithEmoji =
-  data.waLink.replace(
-    '*HII NONA TAROT, BUKTI PEMBAYARAN KE BRI 308101002125500 a.n. RANNI ANUGRAH PRAMUDHITA AKAN AKU TRANSFER SETELAH PESAN INI TERKIRIM*',
-    emojiHeader + '*HII NONA TAROT, BUKTI PEMBAYARAN KE BRI 308101002125500 a.n. RANNI ANUGRAH PRAMUDHITA AKAN AKU TRANSFER SETELAH PESAN INI TERKIRIM*'
-  ) + emojiFooter;
+  btn.disabled = true;
+  btn.innerText = 'Memproses...';
+  closeModal();
 
-// redirect WA
-waWindow.location.href = waUrlWithEmoji;
-  
-    } catch (err) {  
-      waWindow.close();  
-      alert('Terjadi kesalahan koneksi');  
-      console.error(err);  
-    } finally {  
-      btn.disabled = false;  
-      btn.innerText = 'Lanjut ke WhatsApp';  
-    }  
-  }  
+  try {
+    const res = await fetch('/api/book', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+
+    const data = await res.json();
+
+    if (!data.success) {
+      waWindow.close();
+      alert(data.error || 'Booking gagal');
+      return;
+    }
+
+    form.reset();
+    fetchSlot();
+
+    // 🔮 FULL WA MESSAGE DI FRONTEND (AMAN 100%)
+    const message = `
+🔮🙇🏻‍♀️ *HII NONA TAROT, BUKTI PEMBAYARAN KE BRI 308101002125500 a.n. RANNI ANUGRAH PRAMUDHITA AKAN AKU TRANSFER SETELAH PESAN INI TERKIRIM* 🙇🏻‍♀️🔮
+
+Informasi Booking:
+
+Nama: ${data.name}
+Email: ${data.email}
+Paket: ${data.paket}
+
+Cerita / Pertanyaan:
+${data.story}
+
+Kode Booking: ${data.code}
+`;
+
+    const waNumber = '6285600045005';
+    const waUrl =
+      `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
+
+    waWindow.location.href = waUrl;
+
+  } catch (err) {
+    waWindow.close();
+    alert('Terjadi kesalahan koneksi');
+    console.error(err);
+  } finally {
+    btn.disabled = false;
+    btn.innerText = 'Lanjut ke WhatsApp';
+  }
+}
+
 </script>  </body>  
 </html>
