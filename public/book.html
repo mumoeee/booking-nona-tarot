@@ -390,6 +390,33 @@ async function proceedToWA() {
   // ✅ BUKA WA LANGSUNG (USER INITIATED → AMAN POPUP BLOCKER)
   const waWindow = window.open('', '_blank');
 
+if (waWindow) {
+  waWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Menuju WhatsApp...</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body {
+          font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+          background: #f6f3ff;
+          color: #6a4cff;
+        }
+      </style>
+    </head>
+    <body>
+      <div>🔮 Menghubungkan ke WhatsApp…</div>
+    </body>
+    </html>
+  `);
+  waWindow.document.close();
+}
+
   try {
     const res = await fetch('/api/book', {
       method: 'POST',
