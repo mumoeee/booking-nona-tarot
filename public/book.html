@@ -388,10 +388,7 @@ async function proceedToWA() {
   const waNumber = '6285600045005';
 
   // ✅ BUKA WA LANGSUNG (USER INITIATED → AMAN POPUP BLOCKER)
-  const waWindow = window.open(
-    `https://api.whatsapp.com/send?phone=${waNumber}&text=Memproses booking...`,
-    '_blank'
-  );
+  const waWindow = window.open('', '_blank');
 
   try {
     const res = await fetch('/api/book', {
