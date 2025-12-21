@@ -309,7 +309,8 @@ textarea:focus {
 
   </div>  
 </div>  <script>  
-  let formData = {};    
+  let formData = {};  
+  let waWindow = null;  
   
   async function fetchSlot() {  
     try {  
@@ -371,51 +372,17 @@ textarea:focus {
     }, 2000);
   }
 
-let isProcessing = false;
-
+  
 async function proceedToWA() {
-  // 🔒 anti double click
-  if (isProcessing) return;
-  isProcessing = true;
-
   const btn = document.getElementById('btnProceed');
   const form = document.getElementById('bookingForm');
+
+  // anti popup block
+  waWindow = window.open('', '_blank');
 
   btn.disabled = true;
   btn.innerText = 'Memproses...';
   closeModal();
-
-  const waNumber = '6285600045005';
-
-  // ✅ BUKA WA LANGSUNG (USER INITIATED → AMAN POPUP BLOCKER)
-  const waWindow = window.open('', '_blank');
-
-if (waWindow) {
-  waWindow.document.write(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>Menuju WhatsApp...</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <style>
-        body {
-          font-family: system-ui, -apple-system, Segoe UI, sans-serif;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          height: 100vh;
-          background: #f6f3ff;
-          color: #6a4cff;
-        }
-      </style>
-    </head>
-    <body>
-      <div>🔮 Menghubungkan ke WhatsApp…</div>
-    </body>
-    </html>
-  `);
-  waWindow.document.close();
-}
 
   try {
     const res = await fetch('/api/book', {
@@ -432,11 +399,10 @@ if (waWindow) {
       return;
     }
 
-    // reset form & refresh slot
     form.reset();
     fetchSlot();
 
-    // 🔮 PESAN WA FINAL
+    // 🔮 FULL WA MESSAGE DI FRONTEND (AMAN 100%)
     const message = `🔮🙇🏻‍♀️ *HII NONA TAROT, BUKTI PEMBAYARAN KE BRI 308101002125500 An RANNI ANUGRAH PRAMUDHITA BAKAL AKU KIRIM SETELAH PESAN INI* 🙇🏻‍♀️🔮
 
 Informasi Booking:
@@ -451,10 +417,10 @@ ${data.story}
 Kode Booking: ${data.code}
 `;
 
+    const waNumber = '6285600045005';
     const waUrl =
       `https://api.whatsapp.com/send?phone=${waNumber}&text=${encodeURIComponent(message)}`;
 
-    // ✅ UPDATE TAB WA (AMAN DI SEMUA BROWSER)
     waWindow.location.href = waUrl;
 
   } catch (err) {
@@ -464,10 +430,8 @@ Kode Booking: ${data.code}
   } finally {
     btn.disabled = false;
     btn.innerText = 'Lanjut ke WhatsApp';
-    isProcessing = false; // 🔓 unlock
   }
 }
-
 
 </script>  </body>  
 </html>
