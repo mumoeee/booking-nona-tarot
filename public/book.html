@@ -233,6 +233,19 @@ textarea:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(106, 76, 255, 0.15);
 }
+
+.btn-wa {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #6a4cff, #8b6cff);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+}
+
   </style>  </head>  <body>  <div class="container">  
   <div class="card">  
     <h1>Booking Form</h1>  
@@ -304,13 +317,21 @@ textarea:focus {
   Transfer dilakukan setelah berhasil chat WA dan kirim bukti pembayaran via WhatsApp.  
 </p>  
 
-<button id="btnProceed" onclick="proceedToWA()">Lanjut ke WhatsApp</button>  
+<a
+  id="btnWA"
+  href="#"
+  target="_blank"
+  class="btn-wa"
+  style="display:none;text-decoration:none"
+>
+  Lanjut ke WhatsApp
+</a>
+ 
 <button class="btn-secondary" onclick="closeModal()">Batal</button>
 
   </div>  
 </div>  <script>  
   let formData = {};  
-  let waWindow = null;  
   
   async function fetchSlot() {  
     try {  
@@ -325,23 +346,65 @@ textarea:focus {
   
   fetchSlot();  
   
-  document.getElementById('bookingForm').addEventListener('submit', (e) => {  
-    e.preventDefault();  
-  
-    formData = {  
-      name: document.getElementById('name').value,  
-      email: document.getElementById('email').value,  
-      paket: document.getElementById('package').value, 
-      story: document.getElementById('story').value
-    };  
-  
-    if (!formData.paket) {  
-      alert('Silakan pilih paket');  
-      return;  
-    }  
-  
-    document.getElementById('paymentModal').classList.add('show');  
-  });  
+document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const btn = document.querySelector('button[type="submit"]');
+  btn.disabled = true;
+  btn.innerText = 'Memproses...';
+
+  formData = {
+    name: document.getElementById('name').value,
+    email: document.getElementById('email').value,
+    paket: document.getElementById('package').value,
+    story: document.getElementById('story').value
+  };
+
+  if (!formData.paket) {
+    alert('Silakan pilih paket');
+    btn.disabled = false;
+    btn.innerText = 'Booking';
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/book', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+
+    const data = await res.json();
+
+    if (!data.success) {
+      alert(data.error || 'Slot habis');
+      btn.disabled = false;
+      btn.innerText = 'Booking';
+      return;
+    }
+
+    // update UI
+    fetchSlot();
+    document.getElementById('bookingForm').reset();
+
+    // tampilkan tombol WA
+    const waBtn = document.getElementById('btnWA');
+    waBtn.href = data.waUrl;
+    waBtn.style.display = 'block';
+
+    // buka modal pembayaran
+    document.getElementById('paymentModal').classList.add('show');
+
+    btn.innerText = 'Berhasil';
+
+  } catch (err) {
+    alert('Terjadi kesalahan koneksi');
+    console.error(err);
+    btn.disabled = false;
+    btn.innerText = 'Booking';
+  }
+});
+ 
   
   function closeModal() {  
     document.getElementById('paymentModal').classList.remove('show');  
@@ -373,65 +436,6 @@ textarea:focus {
   }
 
   
-async function proceedToWA() {
-  const btn = document.getElementById('btnProceed');
-  const form = document.getElementById('bookingForm');
-
-  // anti popup block
-  waWindow = window.open('', '_blank');
-
-  btn.disabled = true;
-  btn.innerText = 'Memproses...';
-  closeModal();
-
-  try {
-    const res = await fetch('/api/book', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
-    });
-
-    const data = await res.json();
-
-    if (!data.success) {
-      waWindow.close();
-      alert(data.error || 'Booking gagal');
-      return;
-    }
-
-    form.reset();
-    fetchSlot();
-
-    // 🔮 FULL WA MESSAGE DI FRONTEND (AMAN 100%)
-    const message = `🔮🙇🏻‍♀️ *HII NONA TAROT, BUKTI PEMBAYARAN KE BRI 308101002125500 An RANNI ANUGRAH PRAMUDHITA BAKAL AKU KIRIM SETELAH PESAN INI* 🙇🏻‍♀️🔮
-
-Informasi Booking:
-
-Nama: ${data.name}
-Email: ${data.email}
-Paket: ${data.paket}
-
-Cerita / Pertanyaan:
-${data.story}
-
-Kode Booking: ${data.code}
-`;
-
-    const waNumber = '6285600045005';
-    const waUrl =
-      `https://api.whatsapp.com/send?phone=${waNumber}&text=${encodeURIComponent(message)}`;
-
-    waWindow.location.href = waUrl;
-
-  } catch (err) {
-    waWindow.close();
-    alert('Terjadi kesalahan koneksi');
-    console.error(err);
-  } finally {
-    btn.disabled = false;
-    btn.innerText = 'Lanjut ke WhatsApp';
-  }
-}
 
 </script>  </body>  
 </html>
