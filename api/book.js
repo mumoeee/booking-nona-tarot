@@ -5,11 +5,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ success: false, error: 'Method not allowed' });
   }
 
-  const { name, email, paket, story } = req.body;
-  if (!name || !email || !paket || !story) {
+  const { name, email, wa, paket, story } = req.body;
+  if (!name || !email || !wa || !paket || !story) {
     return res.status(400).json({
       success: false,
-      error: 'Name, email, paket, dan story wajib diisi'
+      error: 'Name, email, wa, paket, dan story wajib diisi'
     });
   }
 
@@ -54,10 +54,10 @@ const waUrl =
     // simpan booking
     await sheets.spreadsheets.values.append({
       spreadsheetId: process.env.SPREADSHEET_ID,
-      range: "BOOKING!A:E",
+      range: "BOOKING!A:F",
       valueInputOption: "USER_ENTERED",
       resource: {
-        values: [[code, name, email, paket, story]]
+        values: [[code, name, wa, email, paket, story]]
       }
     });
 
