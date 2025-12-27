@@ -253,19 +253,19 @@ textarea:focus {
     
      <!-- 🔮 CARA PEMESANAN -->
     <div class="ritual">
-      <div class="title">🔮 Cara Pemesanan ✨</div>
+      <div class="title">🔮 Cara Pemesanan 🔮</div>
 
-      Semesta selalu memberi tanda, pastikan <b>slot hari ini masih tersedia</b>
-      sebelum memulai perjalananmu 🌙<br><br>
+<b>1️⃣ Cek Slot</b><br>
+Pastikan slot hari ini masih tersedia 🌙<br><br>
 
-      Jika slot tersedia, isi <b>form booking</b> dengan niat dan cerita yang jujur.
-      Setiap kata akan membantu semesta membaca energimu ✨<br><br>
+<b>2️⃣ Isi Form</b><br>
+Kalau slot ada, isi form di bawah dengan cerita kamu ✨  
+Setelah berhasil booking, akan muncul pop-up nomor rekening.  
+<b>Salin & simpan dulu ya 💳</b><br><br>
 
-      Setelah itu, kamu akan diarahkan ke <b>WhatsApp</b> untuk konfirmasi 💬
-      Mohon lakukan <b>pembayaran hanya setelah berhasil kirim pesan di WhatsApp</b>.<br><br>
-
-      Jangan lupa simpan dan kirim <b>bukti pembayaran</b>.
-      Setelah selesai, bacaanmu akan segera diproses 🔮💜
+<b>3️⃣ Tunggu Dihubungi</b><br>
+Setelah itu, <b>tunggu Kak Ranni menghubungi via WhatsApp</b>.  
+<b>Jangan transfer dulu sebelum dihubungi</b> 💜
     </div>
   
   <!-- FORM -->
@@ -307,7 +307,7 @@ textarea:focus {
   <div class="modal-card">  
     <h3>Informasi Pembayaran</h3>  <p>  
   Simpan nomor rekening berikut.<br>  
-  <b>Jangan transfer sebelum berhasil kirim pesan WA.</b>  
+  <b>Jangan transfer sebelum dihubungi Kak Ranni via WA yaa.</b>  
 </p>  
 
 <div class="rekening-box">  
@@ -318,23 +318,14 @@ textarea:focus {
 <button class="btn-copy" onclick="copyRekening()">📋 Salin Nomor Rekening</button>  
 
 <p style="font-size:13px">  
-  Transfer dilakukan setelah berhasil chat WA dan kirim bukti pembayaran via WhatsApp.  
+  Transfer dilakukan setelah menerima chat WA dari Kak Ranni !  
 </p>  
-
-<a
-  id="btnWA"
-  href="#"
-  target="_blank"
-  class="btn-wa"
-  style="display:none;text-decoration:none"
->
-  Lanjut ke WhatsApp
-</a>
  
-<button class="btn-secondary" onclick="closeModal()">Batal</button>
+<button class="btn-secondary" onclick="closeModal()">Tutup</button>
 
   </div>  
-</div>  <script>  
+</div>  
+<script>  
   let formData = {};  
   
   async function fetchSlot() {  
@@ -391,11 +382,6 @@ document.getElementById('bookingForm').addEventListener('submit', async (e) => {
     // update UI
     fetchSlot();
     document.getElementById('bookingForm').reset();
-
-    // tampilkan tombol WA
-    const waBtn = document.getElementById('btnWA');
-    waBtn.href = data.waUrl;
-    waBtn.style.display = 'block';
 
     // buka modal pembayaran
     document.getElementById('paymentModal').classList.add('show');
