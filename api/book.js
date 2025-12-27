@@ -31,33 +31,16 @@ export default async function handler(req, res) {
       });
     }
 
+    const timestamp = new Date().toISOString();
     const code = `NONA-${Date.now()}`;
-
-const waNumber = '6285600045005';
-
-const message = `🔮🙇🏻‍♀️ *HII NONA TAROT, BUKTI PEMBAYARAN KE BRI 308101002125500 An RANNI ANUGRAH PRAMUDHITA BAKAL AKU KIRIM SETELAH PESAN INI* 🙇🏻‍♀️🔮
-
-Informasi Booking:
-Nama: ${name}
-Email: ${email}
-Paket: ${paket}
-
-Cerita / Pertanyaan:
-${story}
-
-Kode Booking: ${code}`;
-
-const waUrl =
-  `https://api.whatsapp.com/send?phone=${waNumber}&text=${encodeURIComponent(message)}`;
-
 
     // simpan booking
     await sheets.spreadsheets.values.append({
       spreadsheetId: process.env.SPREADSHEET_ID,
-      range: "BOOKING!A:F",
+      range: "BOOKING!A:G",
       valueInputOption: "USER_ENTERED",
       resource: {
-        values: [[code, name, email, wa, paket, story]]
+        values: [[timestamp, code, name, email, wa, paket, story]]
       }
     });
 
@@ -75,7 +58,6 @@ const waUrl =
   success: true,
   code,
   remaining,
-  waUrl
 });
 
 
