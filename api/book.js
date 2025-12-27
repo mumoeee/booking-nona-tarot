@@ -31,7 +31,7 @@ export default async function handler(req, res) {
       });
     }
 
-    const timestamp = new Date().toISOString();
+    const timestamp = new Date().toLocaleString("id-ID", {timeZone: "Asia/Jakarta"});
     const code = `NONA-${Date.now()}`;
 
     // simpan booking
