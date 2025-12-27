@@ -279,7 +279,7 @@ textarea:focus {
   </label>  
 
    <label>WA  
-    <input type="text" id="wa" required>  
+    <input type="tel" id="wa" required>  
    </label>       
 
   <label>Paket  
@@ -360,7 +360,7 @@ document.getElementById('bookingForm').addEventListener('submit', async (e) => {
   formData = {
     name: document.getElementById('name').value,
     email: document.getElementById('email').value,
-    email: document.getElementById('wa').value,
+    wa: document.getElementById('wa').value,
     paket: document.getElementById('package').value,
     story: document.getElementById('story').value
   };
