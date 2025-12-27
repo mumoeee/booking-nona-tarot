@@ -57,7 +57,7 @@ const waUrl =
       range: "BOOKING!A:F",
       valueInputOption: "USER_ENTERED",
       resource: {
-        values: [[code, name, wa, email, paket, story]]
+        values: [[code, name, email, wa, paket, story]]
       }
     });
 
