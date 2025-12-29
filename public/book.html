@@ -266,16 +266,24 @@ Setelah berhasil booking, akan muncul pop-up nomor rekening.
   <!-- FORM -->
     <form id="bookingForm">  
   <label>Nama  
-    <input type="text" id="name" required>  
+    <input type="text" id="name" required placeholder="nama kamu">  
   </label>  
 
   <label>Email  
-    <input type="email" id="email" required>  
+    <input type="email" id="email" required placeholder="emailkamu@gmail.com">  
   </label>  
 
-   <label>WA  
-    <input type="tel" id="wa" required>  
-   </label>       
+<label>WA  
+  <input 
+    type="tel"
+    id="wa"
+    required
+    inputmode="numeric"
+    pattern="[0-9]*"
+    placeholder="085123456789"
+    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+  >  
+</label>       
 
   <label>Paket  
     <select id="package" required>  
