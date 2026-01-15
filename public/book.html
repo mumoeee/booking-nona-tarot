@@ -7,6 +7,19 @@
   <!-- ✨ Magical Font -->
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
   
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.3.5/css/intlTelInput.css"
+  />
+
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.3.5/js/intlTelInput.min.js">
+  </script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.3.5/js/utils.js">
+  </script>
+
+
   <style>  
     :root {  
       --primary: #6a4cff;  
@@ -273,17 +286,15 @@ Setelah berhasil booking, akan muncul pop-up nomor rekening.
     <input type="email" id="email" required placeholder="emailkamu@gmail.com">  
   </label>  
 
-<label>WA  
-  <input 
+<label>WhatsApp
+  <input
     type="tel"
     id="wa"
     required
-    inputmode="numeric"
-    pattern="[0-9]*"
-    placeholder="085123456789"
-    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-  >  
-</label>       
+    placeholder="8123456789"
+    style="width:100%;"
+  >
+</label>    
 
   <label>Paket  
     <select id="package" required>  
@@ -354,7 +365,9 @@ document.getElementById('bookingForm').addEventListener('submit', async (e) => {
   formData = {
     name: document.getElementById('name').value,
     email: document.getElementById('email').value,
-    wa: document.getElementById('wa').value,
+    wa:
+      iti.getSelectedCountryData().dialCode +
+      waInput.value.replace(/\D/g, ''),
     paket: document.getElementById('package').value,
     story: document.getElementById('story').value
   };
@@ -429,6 +442,19 @@ document.getElementById('bookingForm').addEventListener('submit', async (e) => {
     }, 2000);
   }
 
+const waInput = document.querySelector("#wa");
+
+const iti = window.intlTelInput(waInput, {
+  initialCountry: "auto",
+  separateDialCode: true, // TANPA tanda +
+  nationalMode: false,
+  geoIpLookup: callback => {
+    fetch("https://ipapi.co/json/")
+      .then(res => res.json())
+      .then(data => callback(data.country_code))
+      .catch(() => callback("id"));
+  }
+});
   
 
 </script>  </body>  
